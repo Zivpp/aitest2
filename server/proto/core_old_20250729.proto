@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package core_service;
+
+service CoreService {
+  rpc ProcessCall (ProcessRequest) returns (ProcessReply);
+}
+
+message ProcessRequest {
+  string trace_id = 1;
+  uint32 callback_type = 2;
+  objThirdParty obj_third_party = 3;
+  objUser obj_user = 4;
+  objData obj_data = 5;
+  string lang = 6;
+}
+
+message ProcessReply {
+  objResult result = 1;
+  objError error = 2;
+}
+
+message objThirdParty {
+  // CP_KEY:    게임사 번호, int
+ // NAME:    게임사 이름, string
+ // DEGIt:    게임사에서 사용하는 소수점 정보, int
+ // REQ_CALL_TIMEOUT: 게임사 타임아웃( ms ), int
+ // GAME_TYPE:   게임타입( “slot”, “live”, “sports”, “board” ) - 러스트 언어특성상 숫자로 변환해야 한다고 생각됨,  물론 오퍼레이터에 전송할땐 문자열이어야 함  0: slot, 1: live casino, 2: sports, 3: board game,
+ // BET_LIMIT_DEF:  게임사 기본 벳리밋 설정값, string
+ // TRANS_STORED:  게임사별 거래정보 저장시간( redis ), null 일경우 기본 값 사용; second
+ // {
+ //  TTL: {
+ //   ROUND:    라운드 정보 저장 시간, int
+ //   BET_TRANS:   베팅 거래 정보 저장 시간, int
+ //   RESULT_TRANS:  결과 거래 정보 저장 시간, int
+ //   TIP_TRANS:   팁 거래 정보 저장 시간, int
+ //   WITHDRAW_TRANS: 출금 거래 저장 시간, int
+ //   DEPOSIT_TRANS:  입금 거래 저장 시간, int
+ //  }
+ // } 
+  int64 cp_key = 1;
+  string name = 2;
+  int32 degit = 3; // 0.123
+  int64 req_call_timeout = 4;
+  int32 game_type = 5;
+  string bet_limit_def = 6;
+  transStored trans_stored = 7; 
+}
+
+message transStored {
+  int64 round = 1;
+  int64 bet_trans = 2;
+  int64 result_trans = 3;
+  int64 tip_trans = 4;
+  int64 withdraw_trans = 5;
+  int64 deposit_trans = 6;
+}
+
+message objUser {
+  // key: 2176,  // 유저 키
+ // v: 1,   // 사용버전, 기본 1
+ // id: 'evo01',  // 유저ID
+ // op: 1239,  // 오퍼레이터ID( 번호 )
+ // c: 84,  // 실행 게임사키
+ // dt: 1749543331843, // 게임 실행 시간
+ // sg: '4245ccf26f8e4a80a8183c60cad22e2d', // 게임시작시 발행한 토큰
+ // bl: null, // 벳리밋, string, “A”, “B”…
+ // tr: '0756-60d61a31-6466-491e-8ba1-bd2e86b920cb' // 로그 추적코드( trace )
+  uint32 key = 1;
+  uint32 v = 2;
+  string id = 3;
+  uint32 op = 4;
+  uint32 c = 5;
+  int64 dt = 6;
+  string sg = 7;
+  string bl = 8;
+  string tr = 9;
+}
+
+message objData {
+  // round_id:  게임사 발행 라운드ID, string
+ // trans_id:  게임사 발행 거래ID, string
+ // amount:  사용 금액, double
+ // game_code: 게임코드, string
+ // table_code: 테이블코드(명칭), string
+ // game_type: 게임타입( slot, live, sports, board ), string
+ // event_type: 거래 속성타입( 0: 기본… )
+
+ // is_end:   종료된 거래임을 명시, boolean
+ // is_cancel_round: 취소된 라운드임을 명시. boolean
+ // is_end_check:  종료가 된 거리임을 체크할지, boolean
+ // cp_data:  게임사데이터, 콜백처리에는 사용하지 않지만 비동기로 응답 받고 나서 처리 하기 위한 추가 데이터 JSON 형식이지만 데이터가 명확하지 않기 떄문에 문자열로 사용. string
+
+
+  string round_id = 1;           // 게임사 발행 Round Id
+  string trans_id = 2;           // 게임사 발행 transction Id
+  double amount = 3;             // 'amount'는 float 타입
+  string game_code = 4;
+  string table_code = 5;
+  string game_type = 6;
+  string event_type = 7;        // 'event_type'은 주석에 따라 string 또는 int32로 할 수 있습니다. 여기서는 string으로 가정.
+  bool is_end = 8;              // 'is_end'는 bool 타입
+  bool is_cancel_round = 9;     // 'is_cancel_round'는 bool 타입
+  bool is_end_check = 10;       // 'is_end_check'는 bool 타입
+  string cp_data = 11;          // 'cp_data'는 string 타입
+}
+
+message objResult {
+  uint32 result = 1;
+  double balance = 2;
+  string time = 3;
+  string round_id = 4;          // 우리 round_id 반환 되는 
+  string trans_id = 5;          // 우리 trans_id
+  string error_msg = 6;
+}
+
+message objError {
+  int32 statuscode = 1;
+  string time = 2;
+  objRequest requset = 3;
+  string response = 4;
+  string msg = 5; 
+}
+
+message objRequest {
+  int32 t = 1;      // callback_type
+  string u = 2;     // url addr
+  string p = 3;     // senddata(json)
+}

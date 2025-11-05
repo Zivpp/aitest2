@@ -1,0 +1,22 @@
+[
+    {
+        "game_cp_key": 20,
+        "game_code": "netent",
+        "game_name_eng" : "Netent"
+    },
+    {
+        "game_cp_key": 22,
+        "game_code": "redtiger",
+        "game_name_eng" : "Red Tiger"
+    },
+    {
+        "game_cp_key": 42,
+        "game_code": "nolimitcity",
+        "game_name_eng" : "Nolimit City"
+    },
+    {
+        "game_cp_key": 56,
+        "game_code": "btg",
+        "game_name_eng" : "BigTime Gaming"
+    }
+]

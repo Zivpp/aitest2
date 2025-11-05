@@ -1,0 +1,36 @@
+export interface GetMotSettingInfoResp {
+  des: string;
+  sendMethod: string;
+  memberShipId: string;
+  memberShipName: string;
+  numFirst: number;
+  numSec: number;
+  amountStart: number;
+  amountEnd: number;
+  notifyId: number[];
+  smsContent: string;
+  appPushTitle: string;
+  appPushContent: string;
+  msgImg: string;
+  msgSource: string;
+  msgUrl: string;
+  msgType: string;
+  emailTitle: string;
+  emailContent: string;
+  templatePhotoRdo: number;
+  templatePhotoImg: string;
+  templateColorRdo: number;
+  templateColor: string;
+  contentRdo: number;
+  btnColorRdo: number;
+  btnColor: string;
+  btnWordRdo: number;
+  btnWord: string;
+  btnWordingRdo: number;
+  btnWording: string;
+  btnLinkRto: number;
+  btnLink: string;
+  clusterMainType: string;
+  clusterConditional: string;
+  clusterSetting: JSON;
+}

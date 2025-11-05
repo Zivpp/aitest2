@@ -1,0 +1,10 @@
+import * as ExcelJS from "exceljs";
+export declare const summary_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const monthData_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const newOldMember_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const memberShipCard_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const thisMonthPointInfo_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const historyYearPoint_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const memberPointBalance_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const thisMonthUsedPoint_border: (worksheet: ExcelJS.Worksheet) => void;
+export declare const couponPointRange_border: (worksheet: ExcelJS.Worksheet) => void;

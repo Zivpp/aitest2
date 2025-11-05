@@ -1,0 +1,1 @@
+{"version":3,"file":"hero.service.js","sourceRoot":"","sources":["../../../src/Grpc/Hero/hero.service.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAA4C;AAGrC,IAAM,WAAW,GAAjB,MAAM,WAAW;IACtB,OAAO,CAAC,IAAoB;QAC1B,OAAO,EAAE,EAAE,EAAE,IAAI,CAAC,EAAE,EAAE,IAAI,EAAE,SAAS,IAAI,CAAC,EAAE,EAAE,EAAE,CAAC;IACnD,CAAC;CACF,CAAA;AAJY,kCAAW;sBAAX,WAAW;IADvB,IAAA,mBAAU,GAAE;GACA,WAAW,CAIvB"}

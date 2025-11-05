@@ -1,0 +1,65 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Lang = exports.CallbackType = exports.StatusStr = exports.Status = void 0;
+var Status;
+(function (Status) {
+    Status[Status["Success"] = 0] = "Success";
+    Status[Status["SystemError"] = 1] = "SystemError";
+    Status[Status["InvalidRequest"] = 2] = "InvalidRequest";
+    Status[Status["ServiceInaccessible"] = 3] = "ServiceInaccessible";
+    Status[Status["RequestTimeout"] = 100] = "RequestTimeout";
+    Status[Status["CallLimited"] = 101] = "CallLimited";
+    Status[Status["RequestForbidden"] = 104] = "RequestForbidden";
+    Status[Status["MissingParameters"] = 105] = "MissingParameters";
+    Status[Status["InvalidParameters"] = 106] = "InvalidParameters";
+    Status[Status["DuplicatedSerialNo"] = 107] = "DuplicatedSerialNo";
+    Status[Status["RelatedIdNotFound"] = 109] = "RelatedIdNotFound";
+    Status[Status["RecordIdNotFound_110"] = 110] = "RecordIdNotFound_110";
+    Status[Status["RecordIdNotFound_111"] = 111] = "RecordIdNotFound_111";
+    Status[Status["ApiCallLimited"] = 112] = "ApiCallLimited";
+    Status[Status["InvalidAcctId"] = 113] = "InvalidAcctId";
+    Status[Status["InvalidFormat"] = 118] = "InvalidFormat";
+    Status[Status["IpNotWhitelisted"] = 120] = "IpNotWhitelisted";
+    Status[Status["SystemMaintenance"] = 5003] = "SystemMaintenance";
+    Status[Status["MerchantNotFound"] = 10113] = "MerchantNotFound";
+    Status[Status["MerchantSuspend"] = 10116] = "MerchantSuspend";
+    Status[Status["AcctExist"] = 50099] = "AcctExist";
+    Status[Status["AcctNotFound"] = 50100] = "AcctNotFound";
+    Status[Status["AcctInactive"] = 50101] = "AcctInactive";
+    Status[Status["AcctLocked"] = 50102] = "AcctLocked";
+    Status[Status["AcctSuspend"] = 50103] = "AcctSuspend";
+    Status[Status["TokenValidationFailed"] = 50104] = "TokenValidationFailed";
+    Status[Status["InsufficientBalance"] = 50110] = "InsufficientBalance";
+    Status[Status["ExceedMaxAmount"] = 50111] = "ExceedMaxAmount";
+    Status[Status["CurrencyInvalid"] = 50112] = "CurrencyInvalid";
+    Status[Status["AmountInvalid"] = 50113] = "AmountInvalid";
+    Status[Status["DateFormatInvalid"] = 50115] = "DateFormatInvalid";
+})(Status || (exports.Status = Status = {}));
+var StatusStr;
+(function (StatusStr) {
+    StatusStr["Success"] = "Success";
+    StatusStr["SystemError"] = "System Error";
+    StatusStr["AcctNotFound"] = "Acct Not Found";
+    StatusStr["AcctInactive"] = "Acct Inactive";
+    StatusStr["TokenValidationFailed"] = "Token Validation Failed";
+    StatusStr["MissingParameters"] = "Missing Parameters";
+    StatusStr["InvalidParameters"] = "Invalid Parameters";
+    StatusStr["DuplicatedSerialNo"] = "Duplicated Serial No";
+})(StatusStr || (exports.StatusStr = StatusStr = {}));
+var CallbackType;
+(function (CallbackType) {
+    CallbackType[CallbackType["MemberCheck"] = 1] = "MemberCheck";
+    CallbackType[CallbackType["Balance"] = 2] = "Balance";
+    CallbackType[CallbackType["Bet"] = 3] = "Bet";
+    CallbackType[CallbackType["Result"] = 4] = "Result";
+    CallbackType[CallbackType["Refund"] = 5] = "Refund";
+    CallbackType[CallbackType["Tip"] = 6] = "Tip";
+    CallbackType[CallbackType["Bonus"] = 7] = "Bonus";
+    CallbackType[CallbackType["Unknown"] = 99] = "Unknown";
+})(CallbackType || (exports.CallbackType = CallbackType = {}));
+var Lang;
+(function (Lang) {
+    Lang["ko"] = "ko";
+    Lang["en"] = "en";
+})(Lang || (exports.Lang = Lang = {}));
+//# sourceMappingURL=fastspin.enum.js.map

@@ -1,0 +1,48 @@
+trigger:
+  - 'dev'
+  # - 'stage'
+  - 'prod'
+
+pool: Default
+
+variables:
+  ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}:
+    BranchTag: dev
+    ClientBuildEnv: dev
+    ServerBuildEnv: dev
+    GCPACRName: a17life-ftb-crmsit
+    GCPRegistry: Stage-GCP-str-AR
+  # ${{ elseif eq(variables['Build.SourceBranchName'], 'stage') }}:
+  #   BranchTag: stage
+  #   ClientBuildEnv: stage
+  #   ServerBuildEnv: stage
+  #   GCPACRName: life-ftb-crmuat
+  #   GCPRegistry: UAT-GCP-CRM-AR
+  ${{ elseif eq(variables['Build.SourceBranchName'], 'prod') }}:
+    BranchTag: prod
+    ClientBuildEnv: prod
+    ServerBuildEnv: prod
+    GCPACRName: life-str-crmprod
+    GCPRegistry: PROD-GCP-str-AR
+steps:
+  - task: Docker@2
+    displayName: Build an image
+    inputs:
+      containerRegistry: $(GCPRegistry)
+      repository: $(GCPACRName)/e7life-cr/str-crm-backstage
+      command: 'build'
+      Dockerfile: '**/Dockerfile'
+      tags: |
+        $(Build.SourceVersion)
+        latest
+        $(BranchTag)
+      arguments: '--build-arg ServerBuildEnv=$(ServerBuildEnv) --build-arg ClientBuildEnv=$(ClientBuildEnv)'
+  - task: Docker@2
+    inputs:
+      containerRegistry: $(GCPRegistry)
+      repository: $(GCPACRName)/e7life-cr/str-crm-backstage
+      command: 'push'
+      tags: |
+        $(Build.SourceVersion)
+        latest
+        $(BranchTag)
