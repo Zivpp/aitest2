@@ -30,6 +30,7 @@ const qqpk_module_1 = require("./Modules/Qqpk/qqpk.module");
 const clp_module_1 = require("./Modules/Clp/clp.module");
 const hrg_module_1 = require("./Modules/Hrg/hrg.module");
 const access_code_enum_1 = require("./Global/Service/Enum/access.code.enum");
+const line_module_1 = require("./Modules/Line/line.module");
 const dynamicModules = [
     code_grpc_client_module_1.CoreGrpcClientModule,
     access_code_module_1.AccessCodeModule,
@@ -37,6 +38,7 @@ const dynamicModules = [
     hero_module_1.HeroModule,
     game_module_1.GameModule,
     mysql_module_1.MysqlModule,
+    line_module_1.LineModule
 ];
 setGameStartModule(dynamicModules);
 let AppModule = class AppModule {

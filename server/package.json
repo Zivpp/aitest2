@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:main:dev": "APP_ENV=local nest start --watch",
-    "start:dev": "GAME_START_CP_KEY=72 APP_ENV=local nest start --watch",
+    "start:dev": "APP_ENV=local nest start --watch",
     "start:grpc:dev": "APP_ENV=local ts-node src/grpc-bootstrap.ts",
     "start:both:dev": "concurrently \"npm run start:grpc:dev\" \"GAME_START_CP_KEY=9 npm run start:dev\"",
     "start:staging": "GAME_START_CP_KEY=7 APP_ENV=staging nest start --watch",
