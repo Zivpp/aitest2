@@ -26,6 +26,7 @@ import { HrgModule } from "./Modules/Hrg/hrg.module";
 import { AppPort } from "./Global/Service/Enum/access.code.enum";
 import { LineModule } from "./Modules/Line/line.module";
 import { ExcelModule } from "./Modules/Excel/excel.module";
+import { GoogleGenerativeAIModule } from "./Modules/GoogleGenerativeAI/google.generative.ai.module";
 
 const dynamicModules: Array<Type<any> | DynamicModule> = [
   CoreGrpcClientModule,
@@ -35,7 +36,8 @@ const dynamicModules: Array<Type<any> | DynamicModule> = [
   GameModule,
   MysqlModule,
   LineModule,
-  ExcelModule
+  ExcelModule,
+  GoogleGenerativeAIModule
 ];
 
 setGameStartModule(dynamicModules);

@@ -1,11 +1,19 @@
 import { Controller, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import * as XLSX from 'xlsx';
+import { ExcelService } from "./excel.service";
+import { GoogleGenerativeAIService } from "../GoogleGenerativeAI/google.generative.ai.service";
 
 @Controller('excel')
 export class ExcelController {
     constructor(
+        private readonly excelService: ExcelService,
+        private readonly googleGenerativeAI: GoogleGenerativeAIService,
     ) { }
+
+    sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
@@ -20,29 +28,32 @@ export class ExcelController {
             // 3. 轉為 JSON
             const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(workbook?.Sheets[sheetName]);
             // 先取欄位 key
-            const keys = Object.keys(jsonData[0]);
+            // const keys = Object.keys(jsonData[0]);
 
-            // console.log('keys >>>', keys);
-
-            // only get '回答-IEAT APP'
             interface InsertData {
                 index: number;
                 on: string;
-                ans: string;
+                answer: string;
+                keywords: string;
             }
             const insertData: InsertData[] = [];
-            jsonData.forEach((row, index) => {
-                // console.log('row >>>', row)
+            for (const [index, row] of jsonData.entries()) {
+                const keywords = (await this.googleGenerativeAI.getkeyWord(row['ans'])).replace(/\n/g, '').trim();
+                console.log(index, " : ", keywords)
                 insertData.push({
                     index,
                     on: row['on'],
-                    ans: row['ans']
-                })
-            })
+                    answer: row['ans'],
+                    keywords
+                });
+                await this.sleep(4200); // 每次間隔約 4 秒
+            }
 
+            console.info(insertData)
 
+            const result = await this.excelService.insertToFaq(insertData);
 
-            return jsonData;
+            return result;
         } catch (error) {
             console.error(error)
             return error;
