@@ -25,6 +25,7 @@ import { ClpModule } from "./Modules/Clp/clp.module";
 import { HrgModule } from "./Modules/Hrg/hrg.module";
 import { AppPort } from "./Global/Service/Enum/access.code.enum";
 import { LineModule } from "./Modules/Line/line.module";
+import { ExcelModule } from "./Modules/Excel/excel.module";
 
 const dynamicModules: Array<Type<any> | DynamicModule> = [
   CoreGrpcClientModule,
@@ -33,7 +34,8 @@ const dynamicModules: Array<Type<any> | DynamicModule> = [
   HeroModule,
   GameModule,
   MysqlModule,
-  LineModule
+  LineModule,
+  ExcelModule
 ];
 
 setGameStartModule(dynamicModules);

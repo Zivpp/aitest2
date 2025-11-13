@@ -31,6 +31,7 @@ const clp_module_1 = require("./Modules/Clp/clp.module");
 const hrg_module_1 = require("./Modules/Hrg/hrg.module");
 const access_code_enum_1 = require("./Global/Service/Enum/access.code.enum");
 const line_module_1 = require("./Modules/Line/line.module");
+const excel_module_1 = require("./Modules/Excel/excel.module");
 const dynamicModules = [
     code_grpc_client_module_1.CoreGrpcClientModule,
     access_code_module_1.AccessCodeModule,
@@ -38,7 +39,8 @@ const dynamicModules = [
     hero_module_1.HeroModule,
     game_module_1.GameModule,
     mysql_module_1.MysqlModule,
-    line_module_1.LineModule
+    line_module_1.LineModule,
+    excel_module_1.ExcelModule
 ];
 setGameStartModule(dynamicModules);
 let AppModule = class AppModule {
