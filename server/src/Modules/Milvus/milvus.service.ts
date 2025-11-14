@@ -146,31 +146,55 @@ export class MilvusService implements OnModuleInit, OnModuleDestroy {
 
     /**
      * search vectors
-     * @param collection_name 
-     * @param partition_names 
+     * @param collectionName 
+     * @param partitionNames 
      * @param text 
      * @returns 
      */
-    async searchVectors(collection_name: string, partition_names: string[], text: string) {
+    async searchVectors(collectionName: string, partitionNames: string[], text: string) {
         try {
             const queryVector = await this.getEmbedding(text)
             const res = await this.client.search({
-                collection_name: collection_name,
-                partition_names: partition_names,
+                collection_name: collectionName,
+                partition_names: partitionNames,
                 anns_field: 'vector',
-                data: [queryVector], // ✅ 注意新版改用 data 陣列
-                search_params: {
-                    metric_type: 'COSINE',
-                    params: JSON.stringify({ nprobe: 10 }),
-                },
-                limit: 1,
-                output_fields: ['*'],
+                data: [queryVector],
+                topk: 3, // ✅ 放在這裡
+                metric_type: 'COSINE',
+                params: { nprobe: 10 }, // ✅ params 裡只放搜尋演算法參數
+                output_fields: ['keywords', 'answer'],
             });
             return res;
         } catch (error) {
             console.error(error)
             return error;
         }
+    }
+
+    /**
+     * insert data faq
+     * @param collectionName 
+     * @param partitionName 
+     * @param data 
+     * @returns 
+     */
+    async insertDataFaq(collectionName: string, partitionName: string, data: { id: number; keywords: string; answer: string }[]) {
+        const vectorData = await Promise.all(data.map(async d => ({
+            id: d.id,
+            keywords: d.keywords,
+            answer: d.answer,
+            vector: await this.getEmbedding(d.keywords),
+        })));
+        const res = await this.client.insert({
+            collection_name: collectionName,
+            partition_name: partitionName,
+            fields_data: vectorData,
+        });
+
+        // Flush 讓資料寫入後能被查詢
+        await this.client.flushSync({ collection_names: [collectionName] });
+
+        return res;
     }
 
 }

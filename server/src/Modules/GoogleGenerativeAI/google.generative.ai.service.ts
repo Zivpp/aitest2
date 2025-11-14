@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const key = "AIzaSyCvBYSJwk4Q-ug5RWPA9d9ml7x63z_yXN0"
+const key = "AIzaSyCxJvqU1aVKrwASM2MQ11wMp0ScodYWcCM"
+const model = new GoogleGenerativeAI(key).getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 @Injectable()
 export class GoogleGenerativeAIService {
@@ -14,7 +15,6 @@ export class GoogleGenerativeAIService {
      * @returns 
      */
     async getkeyWord(answer: string) {
-        const model = new GoogleGenerativeAI(key).getGenerativeModel({ model: 'gemini-2.0-flash' });
         const prompt =
             `請根據以下客服解答去推論，生成3個能代表主要內容的關鍵字，
 以「逗號」隔開，不要加多餘說明文字．
@@ -25,4 +25,18 @@ ${answer}
         const res = await model.generateContent(prompt);
         return res.response.text();
     };
+
+
+    /**
+     * 自定義詢問內容與 prompt
+     * @param text 
+     * @param prompt 
+     * @returns 
+     */
+    async talk(text: string, prompt: string) {
+        const query = `${prompt}\n\n文字內容：${text}`;
+        const res = await model.generateContent(query);
+        return res.response.text();
+    }
+
 } 

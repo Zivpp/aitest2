@@ -1,10 +1,12 @@
 import { Body, Controller, Post, Req, Res } from "@nestjs/common";
 import { MilvusService } from "./milvus.service";
+import { GoogleGenerativeAIService } from "../GoogleGenerativeAI/google.generative.ai.service";
 
 @Controller('milvus')
 export class MilvusController {
     constructor(
-        private readonly milvusService: MilvusService
+        private readonly milvusService: MilvusService,
+        private readonly googleGenerativeAI: GoogleGenerativeAIService,
     ) { }
 
     @Post('getEmbedding')
@@ -51,9 +53,27 @@ export class MilvusController {
 
     @Post('searchVectors')
     async searchVectors(@Req() req, @Res() res, @Body() body) {
-        const { collection_name, partition_names, text } = body;
-        const result = await this.milvusService.searchVectors(collection_name, partition_names, text);
+        const { collectionName, partitionName, text } = body;
+        const result = await this.milvusService.searchVectors(collectionName, [partitionName], text);
         return res.send(result);
+    }
+
+    @Post('insertDataFaq')
+    async insertDataFaq(@Req() req, @Res() res, @Body() body) {
+        const { collectionName, partitionName, data } = body;
+        const result = await this.milvusService.insertDataFaq(collectionName, partitionName, data);
+        return res.send(result);
+    }
+
+    @Post('talk')
+    async talk(@Req() req, @Res() res, @Body() body) {
+        const { collectionName, partitionName, text, prompt } = body;
+        const searchText = await this.googleGenerativeAI.talk(text, prompt);
+        const result = await this.milvusService.searchVectors(collectionName, [partitionName], searchText);
+        return res.send({
+            talkResult: searchText,
+            searchResult: result
+        });
     }
 
 }

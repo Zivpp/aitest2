@@ -11,6 +11,7 @@ export class ExcelService {
 
     /**
      * 將 Excel 資料批量插入到 FAQ 表
+     * // todo 移走
      * @param dataObjs
      * @returns 
      */
@@ -31,6 +32,28 @@ export class ExcelService {
             );
 
             const result = await Faq.bulkCreate(bulkInsertAry);
+            return result;
+        } catch (err) {
+            console.error('❌ 錯誤:', err);
+            return err;
+        }
+    }
+
+    /**
+     * find all 
+     * // todo 移走
+     * @returns 
+     */
+    async getFaqAll() {
+        try {
+            await sequelize.authenticate();
+            console.log('✅ 連線成功！');
+
+            await sequelize.sync({ alter: true }); // 同步資料表（自動建立或更新）
+            console.log('✅ Table 已同步');
+
+
+            const result = await Faq.findAll();
             return result;
         } catch (err) {
             console.error('❌ 錯誤:', err);

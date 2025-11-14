@@ -1,13 +1,15 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import * as XLSX from 'xlsx';
 import { ExcelService } from "./excel.service";
+import { MilvusService } from "../Milvus/milvus.service";
 import { GoogleGenerativeAIService } from "../GoogleGenerativeAI/google.generative.ai.service";
 
 @Controller('excel')
 export class ExcelController {
     constructor(
         private readonly excelService: ExcelService,
+        private readonly milvusService: MilvusService,
         private readonly googleGenerativeAI: GoogleGenerativeAIService,
     ) { }
 
@@ -58,6 +60,19 @@ export class ExcelController {
             console.error(error)
             return error;
         }
+    }
+
+    @Post('faqRun')
+    async faqRun(@Req() req, @Res() res, @Body() body) {
+        const { collectionName, partitionName } = body;
+        const results = await this.excelService.getFaqAll();
+        const data = results.map((item, index) => ({
+            id: index,
+            keywords: item.keywords,
+            answer: item.answer,
+        }));
+        const result = await this.milvusService.insertDataFaq(collectionName, partitionName, data);
+        return res.send(result);
     }
 
 }
