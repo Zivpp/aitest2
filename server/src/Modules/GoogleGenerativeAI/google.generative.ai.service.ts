@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const key = "AIzaSyA5hyzmJUziKJlXqhttoG56kQ0xbsqVDjE"
+const key = "AIzaSyCvBYSJwk4Q-ug5RWPA9d9ml7x63z_yXN0"
 
 @Injectable()
 export class GoogleGenerativeAIService {

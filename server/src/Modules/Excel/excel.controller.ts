@@ -46,11 +46,11 @@ export class ExcelController {
                     answer: row['ans'],
                     keywords
                 });
-                await this.sleep(4200); // 每次間隔約 4 秒
+                await this.sleep(5000); // 每次間隔約 4 秒
             }
 
-            console.info(insertData)
-
+            // console.info(insertData)
+            // return;
             const result = await this.excelService.insertToFaq(insertData);
 
             return result;
