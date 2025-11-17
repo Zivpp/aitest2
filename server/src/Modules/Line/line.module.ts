@@ -4,10 +4,10 @@ import { LineService } from "./line.service";
 import { ApiModule } from "src/Infrastructure/Api/api.module";
 import { MilvusModule } from "../Milvus/milvus.module";
 import { GoogleGenerativeAIModule } from "../GoogleGenerativeAI/google.generative.ai.module";
-
+import { ExcelModule } from "../Excel/excel.module";
 
 @Module({
-  imports: [ApiModule, MilvusModule, GoogleGenerativeAIModule],
+  imports: [ApiModule, MilvusModule, GoogleGenerativeAIModule, ExcelModule],
   controllers: [LineController],
   providers: [LineService],
 })
