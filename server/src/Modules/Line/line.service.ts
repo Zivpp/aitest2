@@ -20,7 +20,28 @@ export class LineService {
         // return result;
     }
 
-    async replyMessage(replyToken: string, text: string) {
+    /**
+     * 回覆多個訊息
+     * @param replyToken 
+     * @param messageObjs 
+     */
+    async replyMessages(replyToken: string, messageObjs: any[]) {
+        await this.apiService.post(
+            this.LINE_API,
+            {
+                replyToken,
+                messages: messageObjs,
+            },
+            { Authorization: `Bearer ${this.TOKEN}` },
+        );
+    }
+
+    /**
+     * 回覆純文字
+     * @param replyToken 
+     * @param text 
+     */
+    async replyMessageText(replyToken: string, text: string) {
         await this.apiService.post(
             this.LINE_API,
             {
@@ -31,6 +52,27 @@ export class LineService {
         );
     }
 
+    /**
+     * 回覆模板
+     * @param replyToken 
+     * @param template 
+     */
+    async readonlyMessageTemplate(replyToken: string, template: any) {
+        await this.apiService.post(
+            this.LINE_API,
+            {
+                replyToken,
+                messages: template,
+            },
+            { Authorization: `Bearer ${this.TOKEN}` },
+        );
+    }
+
+    /**
+     * 取得使用者 profile
+     * @param userId 
+     * @returns 
+     */
     async getUserProfile(userId: string) {
         const headersOptions = { Authorization: `Bearer ${this.TOKEN} ` };
         const path = `https://api.line.me/v2/bot/profile/${userId}`

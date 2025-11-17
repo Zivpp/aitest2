@@ -51,11 +51,11 @@ export class ExcelService {
             await sequelize.authenticate();
             console.log('✅ 連線成功！');
 
-            await sequelize.sync({ alter: true }); // 同步資料表（自動建立或更新）
+            await sequelize.sync({ alter: true }); // 同步資料表（自動建立或更新
             console.log('✅ Table 已同步');
 
             const result = await FqasUserLog.create({ ...dataObj });
-            console.log('result >>>>', result)
+
             return result;
         } catch (err) {
             console.error('❌ 錯誤:', err);
