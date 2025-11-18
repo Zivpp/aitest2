@@ -5,6 +5,7 @@ import { MilvusService } from '../Milvus/milvus.service';
 import { GoogleGenerativeAIService } from '../GoogleGenerativeAI/google.generative.ai.service';
 import { IFqasUserLog } from 'src/Global/Database/Interface/db.interface';
 import { ExcelService } from '../Excel/excel.service';
+import { RedisService } from 'src/Infrastructure/Redis/redis.service';
 
 @Controller('line')
 export class LineController {
@@ -12,6 +13,7 @@ export class LineController {
         private readonly lineService: LineService,
         private readonly excelService: ExcelService,
         private readonly milvusService: MilvusService,
+        private readonly redisService: RedisService,
         private readonly googleGenerativeAI: GoogleGenerativeAIService
     ) { }
 
@@ -27,7 +29,7 @@ export class LineController {
         const userProfile = await this.lineService.getUserProfile(userId)
 
         // call llm get keywords > search vector > build response
-        const searchPrompt = '請根據以下提問，生成3個能代表主要內容的關鍵字，以「逗號」隔開，不要加多餘說明文字。';
+        const searchPrompt = '請根據以下提問，生成 10 個能代表主要內容的關鍵字，以「逗號」隔開，不要加多餘說明文字。';
         const searchKeyWords = await this.googleGenerativeAI.talk(userText, searchPrompt);
         const vectorResult = await this.milvusService.searchVectors('db_20251114', ['20251114_1'], searchKeyWords);
         const responsePromt = `
@@ -67,6 +69,14 @@ export class LineController {
 
         // if searchKeyWords have "生日"，then reply "是否幫您查詢是否有資格獲取生日相關卷禮？"
         if (searchKeyWords?.includes('生日')) {
+            // 怕訊息轟炸 先查看看有沒有短期內有查詢過生日資格
+            const key = `birthday_check_${userId}`;
+            const isBirthdayCheck = await this.redisService.get(key);
+            if (isBirthdayCheck) {
+                await this.lineService.replyMessageText(replyToken, fqaRes);
+                return;
+            }
+            await this.redisService.set(key, true, 60 * 5); // 5 分鐘內不會再詢問
             await this.lineService.replyMessages(replyToken, [
                 {
                     type: 'text',
@@ -74,17 +84,9 @@ export class LineController {
                 },
                 {
                     "type": "flex",
-                    "altText": "生日禮資格查詢",
+                    "altText": "birthday gift query",
                     "contents": {
                         "type": "bubble",
-                        "size": "mega",
-                        "hero": {
-                            "type": "image",
-                            "url": "https://www.ieatogether.com.tw/img/booking/booking_ajoy_img.webp",
-                            "size": "full",
-                            "aspectRatio": "20:9",
-                            "aspectMode": "cover"
-                        },
                         "body": {
                             "type": "box",
                             "layout": "vertical",
@@ -93,56 +95,23 @@ export class LineController {
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": "🎂 生日禮資格查詢",
+                                    "text": "🎉birthday gift query🎊",
                                     "weight": "bold",
-                                    "size": "xl",
-                                    "color": "#333333",
-                                    "align": "center"
-                                },
-                                {
-                                    "type": "text",
-                                    "text": "立即確認您是否符合生日專屬優惠資格！",
-                                    "wrap": true,
-                                    "size": "sm",
-                                    "color": "#666666",
-                                    "align": "center"
-                                },
-                                {
-                                    "type": "separator",
-                                    "margin": "md"
+                                    "size": "lg",
+                                    "align": "center",
+                                    "color": "#333333"
                                 },
                                 {
                                     "type": "button",
                                     "action": {
                                         "type": "uri",
-                                        "label": "立即查詢",
+                                        "label": "SEARCH",
                                         "uri": "https://www.ieatogether.com.tw/foreignBooking"
                                     },
                                     "style": "primary",
-                                    "height": "sm",
-                                    "color": "#1DB446",
-                                    "margin": "lg"
+                                    "color": "#1DB446"
                                 }
                             ]
-                        },
-                        "footer": {
-                            "type": "box",
-                            "layout": "vertical",
-                            "spacing": "sm",
-                            "contents": [
-                                {
-                                    "type": "text",
-                                    "text": "提醒：需登入會員後查詢生日禮資格",
-                                    "wrap": true,
-                                    "color": "#999999",
-                                    "size": "xs",
-                                    "align": "center"
-                                }
-                            ]
-                        },
-                        "styles": {
-                            "body": { "backgroundColor": "#FFFFFF" },
-                            "footer": { "backgroundColor": "#FAFAFA" }
                         }
                     }
                 }

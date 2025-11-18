@@ -27,6 +27,10 @@ const Faq = sequelize.define('Faq', {
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
     },
+    isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+    },
 }, {
     tableName: 'faqs',
     timestamps: false, // 不用 Sequelize 預設 createdAt/updatedAt
