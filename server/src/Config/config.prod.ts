@@ -1327,6 +1327,7 @@ export const Config = {
     vendors: {
       "1": Game.BNG,
       "2": Game.BNG_PLAYSON,
+      "4": Game.BNG,
     },
   },
   MGP_GROUP: {

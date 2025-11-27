@@ -6,6 +6,7 @@ import { GoogleGenerativeAIService } from '../GoogleGenerativeAI/google.generati
 import { IFqasUserLog } from 'src/Global/Database/Interface/db.interface';
 import { ExcelService } from '../Excel/excel.service';
 import { RedisService } from 'src/Infrastructure/Redis/redis.service';
+import { HOT_REARCH_PROMPT, HOT_RESPONSE_PROMPT } from './line.config';
 
 @Controller('line')
 export class LineController {
@@ -29,22 +30,14 @@ export class LineController {
         const userProfile = await this.lineService.getUserProfile(userId)
 
         // call llm get keywords > search vector > build response
-        const searchPrompt = '請根據以下提問，生成 10 個能代表主要內容的關鍵字，以「逗號」隔開，不要加多餘說明文字。';
+        const searchPrompt = HOT_REARCH_PROMPT();
         const searchKeyWords = await this.googleGenerativeAI.talk(userText, searchPrompt);
         const vectorResult = await this.milvusService.searchVectors('db_20251114', ['20251114_1'], searchKeyWords);
-        const responsePromt = `
-        [角色設定]
-        你是一個客服 AI，了解饗賓集團的餐飲活動與會員制度。
-
-        [任務指令]
-        請根據提供的搜尋結果，挑選最相關答案回覆顧客。
-
-        [規則]
-        1. 若無關聯，請回答「抱歉，我無法回答您的問題，請聯繫真人客服。」
-        2. 若多個答案相關，請整合成一段自然的回覆。
-        3. 回覆後加上本次關鍵字：${searchKeyWords}，幫我隔一行。
-        `
-        const fqaRes = await this.googleGenerativeAI.talk(JSON.stringify(vectorResult?.results, null, 2), responsePromt);
+        const responsePromt = HOT_RESPONSE_PROMPT({
+            vectorResult: vectorResult,
+            searchKeyWords: searchKeyWords
+        })
+        const fqaRes = await this.googleGenerativeAI.talk("", responsePromt);
 
 
         // console.log('fqaRes >>>', fqaRes);

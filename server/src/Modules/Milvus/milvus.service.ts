@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { MilvusClient } from "@zilliz/milvus2-sdk-node";
 import { pipeline } from '@xenova/transformers';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class MilvusService implements OnModuleInit, OnModuleDestroy {
@@ -179,8 +180,9 @@ export class MilvusService implements OnModuleInit, OnModuleDestroy {
      * @returns 
      */
     async insertDataFaq(collectionName: string, partitionName: string, data: { id: number; keywords: string; answer: string }[]) {
+        // v1. 直接整串 keywords insert
         const vectorData = await Promise.all(data.map(async d => ({
-            id: d.id,
+            id: uuidv4(),
             keywords: d.keywords,
             answer: d.answer,
             vector: await this.getEmbedding(d.keywords),
@@ -194,7 +196,7 @@ export class MilvusService implements OnModuleInit, OnModuleDestroy {
         // Flush 讓資料寫入後能被查詢
         await this.client.flushSync({ collection_names: [collectionName] });
 
-        return res;
+        return { status: 'success' };
     }
 
 }

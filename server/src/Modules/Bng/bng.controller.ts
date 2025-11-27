@@ -34,7 +34,7 @@ export class BngController {
     private readonly bngService: BngService,
     private readonly apiService: ApiService,
     private readonly redisService: RedisService,
-  ) {}
+  ) { }
 
   @Post(apiPath.bng.sid)
   @UsePipes(GlobalDTOValidationPipe)
@@ -116,7 +116,7 @@ export class BngController {
     let objThirdparty: any | null = null;
     const forceGamecode = Config.bng_force_gamecode?.[body?.game_id];
     const vendorId = forceGamecode?.to_provider_id || body?.provider_id;
-    objThirdparty = Config.BNG_GROUP.vendors?.[vendorId];
+    objThirdparty = Config.BNG_GROUP?.vendors?.[vendorId];
 
     if (!objThirdparty) {
       return res.status(HttpStatus.BAD_REQUEST).send(Config.RESPONSE_ERROR);

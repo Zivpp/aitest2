@@ -68,7 +68,7 @@ export class ExcelController {
         const results = await this.excelService.getFaqAll();
         const data = results.map((item, index) => ({
             id: index,
-            keywords: item.keywords,
+            keywords: item.answer,
             answer: item.answer,
         }));
         const result = await this.milvusService.insertDataFaq(collectionName, partitionName, data);
