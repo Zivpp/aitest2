@@ -1457,6 +1457,35 @@ export declare const Config: {
                 cp_key: number;
                 req_call_timeout: number;
             };
+            "4": {
+                name: string;
+                cp_key: number;
+                url: string;
+                img_url: string;
+                call_url: string;
+                studio: string;
+                game_type: string;
+                wallet: string;
+                req_call_timeout: number;
+                trans_stored: {
+                    round: number;
+                    bet_trans: number;
+                    result_trans: number;
+                    tip_trans: number;
+                };
+                language: {
+                    KO: string;
+                    EN: string;
+                };
+                language_def: string;
+                bet_limit: {
+                    A: string;
+                    B: string;
+                    C: string;
+                };
+                bet_limit_def: string;
+                degit: number;
+            };
         };
     };
     MGP_GROUP: {
@@ -1956,7 +1985,9 @@ export declare const Config: {
     TIME_MS_OF_DAY: number;
     TIME_MS_OF_HOUR: number;
     TIME_MS_OF_MINUTE: number;
-    RESPONSE_ERROR: string;
+    RESPONSE_ERROR: {
+        error: string;
+    };
     MAX_GAMECODE_LENGTH: number;
     MAIN_APP_IP: string[];
     MANAGER_IP: string[];

@@ -1313,6 +1313,7 @@ exports.Config = {
         vendors: {
             "1": exports.Game.BNG,
             "2": exports.Game.BNG_PLAYSON,
+            "4": exports.Game.BNG,
         },
     },
     MGP_GROUP: {

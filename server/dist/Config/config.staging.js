@@ -1315,6 +1315,7 @@ exports.Config = {
         vendors: {
             "1": exports.Game.BNG,
             "2": exports.Game.BNG_PLAYSON,
+            "4": exports.Game.BNG,
         },
     },
     MGP_GROUP: {
@@ -1522,7 +1523,7 @@ exports.Config = {
     TIME_MS_OF_DAY: 86400000,
     TIME_MS_OF_HOUR: 3600000,
     TIME_MS_OF_MINUTE: 60000,
-    RESPONSE_ERROR: "error",
+    RESPONSE_ERROR: { error: "error" },
     MAX_GAMECODE_LENGTH: 100,
     MAIN_APP_IP: [
         "10.0.0.21",

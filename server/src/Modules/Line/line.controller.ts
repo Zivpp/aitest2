@@ -7,6 +7,8 @@ import { IFqasUserLog } from 'src/Global/Database/Interface/db.interface';
 import { ExcelService } from '../Excel/excel.service';
 import { RedisService } from 'src/Infrastructure/Redis/redis.service';
 import { HOT_REARCH_PROMPT, HOT_RESPONSE_PROMPT } from './line.config';
+import { ErrorValue } from 'exceljs';
+import { LineUserProfile, LineWebhookEvent } from './line.interface';
 
 @Controller('line')
 export class LineController {
@@ -18,7 +20,7 @@ export class LineController {
         private readonly googleGenerativeAI: GoogleGenerativeAIService
     ) { }
 
-    @Post('webhook')
+    @Post('webhook_old_1')
     async handleWebhook(@Req() req, @Res() res, @Body() body: any) {
         const event = body.events?.[0];
         if (!event) return { status: 'no event' };
@@ -112,5 +114,21 @@ export class LineController {
         }
 
         return res.send({ status: 'ok' });
+    }
+
+    @Post('webhook')
+    async handleWebhookV2(@Req() req, @Res() res, @Body() body: any) {
+        const event: LineWebhookEvent = body.events?.[0];
+        if (!event) return { status: 'no event' };
+
+        const userText = event.message?.text;
+        const replyToken = event.replyToken;
+        const userId = event.source?.userId;
+
+        const userProfile: LineUserProfile = await this.lineService.getUserProfile(userId);
+        console.log('userProfile >>>>', userProfile)
+
+        return res.send({ statusbar: 'OK' });
+
     }
 }

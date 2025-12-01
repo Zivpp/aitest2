@@ -91,7 +91,7 @@ let BngController = class BngController {
         let objThirdparty = null;
         const forceGamecode = config_1.Config.bng_force_gamecode?.[body?.game_id];
         const vendorId = forceGamecode?.to_provider_id || body?.provider_id;
-        objThirdparty = config_1.Config.BNG_GROUP.vendors?.[vendorId];
+        objThirdparty = config_1.Config.BNG_GROUP?.vendors?.[vendorId];
         if (!objThirdparty) {
             return res.status(common_1.HttpStatus.BAD_REQUEST).send(config_1.Config.RESPONSE_ERROR);
         }
