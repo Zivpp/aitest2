@@ -66,9 +66,11 @@ export class ExcelController {
     async faqRun(@Req() req, @Res() res, @Body() body) {
         const { collectionName, partitionName } = body;
         const results = await this.excelService.getFaqAll();
+        console.log(results[0])
+        // prepare data set.
         const data = results.map((item, index) => ({
-            id: index,
-            keywords: item.answer,
+            id: item.id,
+            vector: item.answer,
             answer: item.answer,
         }));
         const result = await this.milvusService.insertDataFaq(collectionName, partitionName, data);

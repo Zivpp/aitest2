@@ -182,10 +182,9 @@ export class MilvusService implements OnModuleInit, OnModuleDestroy {
     async insertDataFaq(collectionName: string, partitionName: string, data: { id: number; keywords: string; answer: string }[]) {
         // v1. 直接整串 keywords insert
         const vectorData = await Promise.all(data.map(async d => ({
-            id: uuidv4(),
-            keywords: d.keywords,
+            id: d.id,
             answer: d.answer,
-            vector: await this.getEmbedding(d.keywords),
+            vector: await this.getEmbedding(d.answer),
         })));
         const res = await this.client.insert({
             collection_name: collectionName,
@@ -197,6 +196,31 @@ export class MilvusService implements OnModuleInit, OnModuleDestroy {
         await this.client.flushSync({ collection_names: [collectionName] });
 
         return { status: 'success' };
+    }
+
+    /**
+     *  search Vectors Top3
+     * @param text 
+     * @returns 
+     */
+    async searchVectorsTop3(text: string, collectionName: string, partitionNames: string[]) {
+        try {
+            const queryVector = await this.getEmbedding(text)
+            const res = await this.client.search({
+                collection_name: collectionName,
+                partition_names: partitionNames,
+                anns_field: 'vector',
+                data: [queryVector],
+                topk: 3, // ✅ 放在這裡
+                metric_type: 'COSINE',
+                params: { nprobe: 10 }, // ✅ params 裡只放搜尋演算法參數
+                output_fields: ['id', 'answer'],
+            });
+            return res?.results;
+        } catch (error) {
+            console.error(error)
+            return error;
+        }
     }
 
 }

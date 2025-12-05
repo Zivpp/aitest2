@@ -121,12 +121,29 @@ export class LineController {
         const event: LineWebhookEvent = body.events?.[0];
         if (!event) return { status: 'no event' };
 
-        const userText = event.message?.text;
-        const replyToken = event.replyToken;
-        const userId = event.source?.userId;
+        const userText = event.message?.text; // 使用者文字
+        const replyToken = event.replyToken; // 此次詢問的回應 tokne ; 一次性
+        const userId = event.source?.userId; // 使用者資訊
 
         const userProfile: LineUserProfile = await this.lineService.getUserProfile(userId);
-        console.log('userProfile >>>>', userProfile)
+        // console.log('userProfile >>>>', userProfile)
+
+        // step 1. LLM 猜意圖與補強語句 ; original / inferred_question / keywords
+        const intentRes = await this.googleGenerativeAI.getUserQIntentObj(userText);
+        console.log('intentRes >>>', intentRes)
+        // step 2. Vector search, get top 3
+        const resultVectorTop3Objs = await this.milvusService.searchVectorsTop3(intentRes?.inferred_question, 'db_20251201', ['p1'])
+        console.log('resultVectorTop3Objs >>>', resultVectorTop3Objs)
+        // step 3. RDB search with keywords, get top 3
+        const resultRDBTop3Objs = await this.excelService.searchRDBRatio(intentRes?.keywords, 0.5)
+        console.log('resultRDBTop3Objs >>>', resultRDBTop3Objs)
+
+        // step 4. 整合答案給 llm 推論
+        const answerResult = await this.googleGenerativeAI.IntegrationOfInferences(intentRes?.inferred_question, resultVectorTop3Objs, resultRDBTop3Objs)
+        console.log('answerResult >>>', answerResult)
+
+        // step 5. 回覆使用者
+        await this.lineService.replyMessageText(replyToken, answerResult?.final_reply);
 
         return res.send({ statusbar: 'OK' });
 
