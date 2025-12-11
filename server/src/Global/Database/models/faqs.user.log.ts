@@ -4,71 +4,58 @@ import sequelize from '../db.js';
 
 const FaqsUserLog = sequelize.define('FaqsUserLog', {
     id: {
+        type: DataTypes.STRING,
+        primaryKey: true
+    },
+    user_id: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    user_info_str: {
+        type: DataTypes.TEXT, // 資訊可能偏長，用 TEXT 比較安全
+        allowNull: true
+    },
+    original_question: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    inferred_question: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    inferred_keywords: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    vector_id_str: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    rdb_id_str: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    answer: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    is_hit: {
         type: DataTypes.INTEGER,
-        autoIncrement: true, // nextval 對應 autoIncrement
-        primaryKey: true,
+        defaultValue: 0,   // 1=成功命中, 0=未命中
+        allowNull: false
     },
     created_at: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
+        defaultValue: DataTypes.NOW
     },
     updated_at: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-    },
-    event_type: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    event_message_text: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    event_json_str: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    user_id: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    user_displayname: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    user_picture_url: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    user_json_str: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    gpt_user_q_keywords_prompt: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    gpt_user_q_keywords_str: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    gpt_vector_search_result_json_str: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    gpt_answer_prompt: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
-    gpt_answer: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },
+        defaultValue: DataTypes.NOW
+    }
 }, {
-    tableName: 'faqs_user_log',
-    timestamps: false, // 因為手動有 created_at / updated_at
+    tableName: 'faqs_user_logs',
+    timestamps: false, // 因為你手動設定欄位
+    underscored: true
 });
 
 export default FaqsUserLog;

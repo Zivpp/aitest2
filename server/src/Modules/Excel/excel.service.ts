@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { QueryTypes } from "sequelize";
 import sequelize from "src/Global/Database/db";
-import { IFqasUserLog } from "src/Global/Database/Interface/db.interface";
+import { IFaqsUserLog, IHisUserQAInsert } from "src/Global/Database/Interface/db.interface";
 import Faq from "src/Global/Database/models/faqs.model";
 import FqasUserLog from "src/Global/Database/models/faqs.user.log";
+import ORM_HisUserQA from "src/Global/Database/models/his.user.qa";
+import { IRelevantContext } from "../Line/line.interface";
 
 
 @Injectable()
@@ -91,11 +93,34 @@ export class ExcelService {
     }
 
     /**
+     * 根據使用者 ID，抓取最近 10 分鐘內的相關訊息
+     * @param userId 
+     * @returns 
+     */
+    async getRelevantContext(userId: string): Promise<IRelevantContext[]> {
+        try {
+            await sequelize.authenticate();
+            console.log('✅ 連線成功！');
+
+            await sequelize.sync({ alter: true }); // 同步資料表（自動建立或更新
+            console.log('✅ Table 已同步');
+
+            const result: IRelevantContext[] = [];
+            // const searchRes = await FqasUserLog.findAll({ where: { user_id: userId } }); // change to search info.
+            return result;
+        } catch (err) {
+            console.error('❌ 錯誤:', err);
+            return err;
+        }
+    }
+
+
+    /**
      * 將 Excel 資料批量插入到 FAQS_USER_LOG 表
      * // todo 移走
      * @returns 
      */
-    async insertOneFqasUserLog(dataObj: IFqasUserLog) {
+    async insertOneFqasUserLog(dataObj: IFaqsUserLog) {
         try {
             await sequelize.authenticate();
             console.log('✅ 連線成功！');
@@ -104,6 +129,23 @@ export class ExcelService {
             console.log('✅ Table 已同步');
 
             const result = await FqasUserLog.create({ ...dataObj });
+
+            return result;
+        } catch (err) {
+            console.error('❌ 錯誤:', err);
+            return err;
+        }
+    }
+
+    async insertOneHisUserQA(dataObj: IHisUserQAInsert) {
+        try {
+            await sequelize.authenticate();
+            console.log('✅ 連線成功！');
+
+            await sequelize.sync({ alter: true }); // 同步資料表（自動建立或更新
+            console.log('✅ Table 已同步');
+
+            const result = await ORM_HisUserQA.create({ ...dataObj });
 
             return result;
         } catch (err) {

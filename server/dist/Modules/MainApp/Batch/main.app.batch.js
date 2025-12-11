@@ -31,15 +31,6 @@ let MainAppBatch = class MainAppBatch {
         }
     }
     async LoadGameCPList() {
-        const intervalTime = 3 * 1000;
-        this.interval = setInterval(async () => {
-            try {
-                await this.accessCodeService.LoadGameCPList(true);
-            }
-            catch (error) {
-                console.error("Error in LoadGameCPList:", error);
-            }
-        }, intervalTime);
     }
     async loadDefSplash() {
         const intervalTime = 3 * 1000;

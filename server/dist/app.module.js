@@ -23,7 +23,6 @@ const config_1 = require("./Config/config");
 const pp_module_1 = require("./Modules/Pp/pp.module");
 const code_grpc_client_module_1 = require("./Grpc/Clients/code.grpc.client.module");
 const main_app_module_1 = require("./Modules/MainApp/main.app.module");
-const mysql_module_1 = require("./Infrastructure/MySQL/mysql.module");
 const play_module_1 = require("./Modules/Play/play.module");
 const fastspin_module_1 = require("./Modules/FastSpin/fastspin.module");
 const qqpk_module_1 = require("./Modules/Qqpk/qqpk.module");
@@ -40,7 +39,6 @@ const dynamicModules = [
     redis_module_1.RedisModule,
     hero_module_1.HeroModule,
     game_module_1.GameModule,
-    mysql_module_1.MysqlModule,
     line_module_1.LineModule,
     excel_module_1.ExcelModule,
     google_generative_ai_module_1.GoogleGenerativeAIModule,

@@ -76,7 +76,7 @@ export class LineService {
     async getUserProfile(userId: string) {
         const headersOptions = { Authorization: `Bearer ${this.TOKEN} ` };
         const path = `https://api.line.me/v2/bot/profile/${userId}`
-        console.log('path   >>>', path)
+        // console.log('path   >>>', path)
         const res = await this.apiService.get(path, headersOptions);
         return res;
     }

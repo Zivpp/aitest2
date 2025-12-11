@@ -38,15 +38,15 @@ export class MainAppBatch implements OnApplicationBootstrap, OnModuleDestroy {
   }
 
   async LoadGameCPList() {
-    // const intervalTime = Config.TIME_MS_OF_HOUR;
-    const intervalTime = 3 * 1000; // for test
-    this.interval = setInterval(async () => {
-      try {
-        await this.accessCodeService.LoadGameCPList(true);
-      } catch (error) {
-        console.error("Error in LoadGameCPList:", error);
-      }
-    }, intervalTime);
+    // // const intervalTime = Config.TIME_MS_OF_HOUR;
+    // const intervalTime = 3 * 1000; // for test
+    // this.interval = setInterval(async () => {
+    //   try {
+    //     await this.accessCodeService.LoadGameCPList(true);
+    //   } catch (error) {
+    //     console.error("Error in LoadGameCPList:", error);
+    //   }
+    // }, intervalTime);
   }
 
   async loadDefSplash() {

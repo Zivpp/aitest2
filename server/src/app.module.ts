@@ -35,7 +35,7 @@ const dynamicModules: Array<Type<any> | DynamicModule> = [
   RedisModule,
   HeroModule,
   GameModule,
-  MysqlModule,
+  // MysqlModule,
   LineModule,
   ExcelModule,
   GoogleGenerativeAIModule,

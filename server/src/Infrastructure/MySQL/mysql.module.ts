@@ -10,7 +10,7 @@ import { MysqlPoolProvider } from "./mysql.provider";
   exports: [MysqlPoolProvider],
 })
 export class MysqlModule implements OnModuleDestroy {
-  constructor(@Inject(DB_POOL) private readonly pool: Pool) {}
+  constructor(@Inject(DB_POOL) private readonly pool: Pool) { }
   async onModuleDestroy() {
     await this.pool.end();
   }
