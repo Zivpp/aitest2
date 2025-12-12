@@ -93,7 +93,7 @@ export class ExcelService {
     }
 
     /**
-     * 根據使用者 ID，抓取最近 10 分鐘內的相關訊息
+     * 根據使用者 ID，抓取最近 3 則相關訊息
      * @param userId 
      * @returns 
      */
@@ -105,8 +105,27 @@ export class ExcelService {
             await sequelize.sync({ alter: true }); // 同步資料表（自動建立或更新
             console.log('✅ Table 已同步');
 
-            const result: IRelevantContext[] = [];
-            // const searchRes = await FqasUserLog.findAll({ where: { user_id: userId } }); // change to search info.
+            const sql = `
+                SELECT
+                    id,
+                    user_id,
+                    session_id,
+                    inferred_question,
+                    answer,
+                    created_at
+                FROM his_user_qa
+                WHERE user_id = :userId
+                AND intend_type in ('PERSONAL_INFO_QUERY', 'ACTION_REQUEST')
+                AND is_valid = 1
+                ORDER BY created_at DESC
+                LIMIT 3;
+            `;
+
+            const result = await sequelize.query<IRelevantContext>(sql, {
+                replacements: { userId },
+                type: QueryTypes.SELECT,
+            });
+
             return result;
         } catch (err) {
             console.error('❌ 錯誤:', err);

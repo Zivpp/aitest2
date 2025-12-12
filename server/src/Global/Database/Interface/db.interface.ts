@@ -34,4 +34,6 @@ export interface IHisUserQAInsert {
     is_valid?: number;
     is_emergency?: number;
     isNeedHumanAgent?: number;
+    is_related?: number;
+    is_task_completed?: number;
 }

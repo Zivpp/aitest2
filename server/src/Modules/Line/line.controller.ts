@@ -187,6 +187,7 @@ export class LineController {
         mfQAObj.isRelated = false;
         mfQAObj.isNeedHumanAgent = false;
         mfQAObj.isValid = false;
+        mfQAObj.isTaskCompleted = false;
         mfQAObj.ruudId = replyToken; // line reply token 每一次都是唯一值
         mfQAObj.sessionId = uuidv4();
         mfQAObj.previousMessages = [];
@@ -202,6 +203,7 @@ export class LineController {
 
         // 抓取關聯性前文 <先不限制時間>
         const previousMessages = await this.excelService.getRelevantContext(userId);
+        console.log('previousMessages >>>', previousMessages);
 
         // AI : 前後文補強 / 語意是否有效評估 / 詢問句補強 / keyword 抓取 / 意圖分類
         const intentClassifierRes = await this.googleGenerativeAI.analyzeUserQuery(userText, previousMessages);
@@ -210,17 +212,24 @@ export class LineController {
         mfQAObj.inferredQuestion = intentClassifierRes?.inferred_question;
         mfQAObj.keywords = intentClassifierRes?.keywords;
         mfQAObj.intent = intentClassifierRes?.intent;
-        mfQAObj.isValid = intentClassifierRes?.isValid;
-        mfQAObj.isRelated = intentClassifierRes?.isRelated;
+        mfQAObj.isValid = (String(intentClassifierRes?.isValid).toLowerCase() === 'true' ? true : false);
+        mfQAObj.isRelated = (String(intentClassifierRes?.isRelated).toLowerCase() === 'true' ? true : false);
+        mfQAObj.isTaskCompleted = (String(intentClassifierRes?.isTaskCompleted).toLowerCase() === 'true' ? true : false);
 
+        // ＊與前後文關聯特殊處理
+        const relatedIntents = [INTENT_CLASSIFIER.PERSONAL_INFO_QUERY, INTENT_CLASSIFIER.ACTION_REQUEST];
+        if (!relatedIntents.includes(mfQAObj.intent)) {
+            mfQAObj.isRelated = false;
+        }
         // 是否為同一組對話 ; 此對話與前文是否相關, 相關則 sessionId 相同
-        if (String(mfQAObj.isRelated).toLowerCase() === 'true')
+        if (mfQAObj.isRelated)
             mfQAObj.sessionId = previousMessages?.[0]?.session_id;
 
         // 根據語意派發相關作業流程
         const tmpStr = `服務正在建置中, 期待不久後能為您服務。`
         switch (intentClassifierRes?.intent) {
             case INTENT_CLASSIFIER.FAQ:
+                mfQAObj.finalReply = tmpStr;
                 break;
             case INTENT_CLASSIFIER.PERSONAL_INFO_QUERY:
                 mfQAObj.finalReply = tmpStr;
@@ -258,9 +267,11 @@ export class LineController {
             intend_type: mfQAObj.intent,
             match_vector_ids: mfQAObj.vectorSource?.map((item) => item.id).join(','),
             match_rdb_ids: mfQAObj.rdbSource?.map((item) => item.id).join(','),
-            is_emergency: (String(mfQAObj.isEmergencyLevel).toLowerCase() === 'true' ? 1 : 0),
-            is_valid: (String(mfQAObj.isValid).toLowerCase() === 'true' ? 1 : 0),
-            isNeedHumanAgent: (mfQAObj.isNeedHumanAgent ? 1 : 0),
+            is_emergency: mfQAObj.isEmergencyLevel ? 1 : 0,
+            is_valid: mfQAObj.isValid ? 1 : 0,
+            isNeedHumanAgent: mfQAObj.isNeedHumanAgent ? 1 : 0,
+            is_related: mfQAObj.isRelated ? 1 : 0,
+            is_task_completed: mfQAObj.isTaskCompleted ? 1 : 0,
         })
         await this.excelService.insertOneHisUserQA(insertObj);
         // console.log('insertObj >>>', insertObj)

@@ -3,7 +3,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { IIntentClassifier, IUserQIntentObj } from "./google.generative.ai.interface";
 import { IRelevantContext } from "../Line/line.interface";
 
-
 const key = "1234"
 const model = new GoogleGenerativeAI(key).getGenerativeModel({ model: 'gemini-2.0-flash' });
 
@@ -201,7 +200,7 @@ ${preText}
      */
     private formatRelevantContexts(contexts: IRelevantContext[]): string {
         if (!contexts || contexts.length === 0) {
-            return "前文內容：無";
+            return "使用者近期詢問內容：無, isRelated = false";
         }
 
         const lines = contexts.map(ctx => {
@@ -212,7 +211,7 @@ ${preText}
             return `${time} 使用者詢問: ${ctx.inferred_question}\n${time} 回答: ${ctx.answer}`;
         });
 
-        return `前文內容：\n${lines.join("\n")}`;
+        return `使用者近期詢問內容：\n${lines.join("\n")}\n[注意]如果與此次詢問意圖無關，則無視「使用者近期詢問內容」, isRelated = false`;
     }
 
     /**

@@ -43,6 +43,7 @@ export interface IMultifunctionalQAObj {
     isNeedHumanAgent: boolean; // 是否需要人工介入
     isRelated: boolean; // 是否為相關對話? (需要上文)
     isEmergencyLevel: boolean; // 是否為緊急程度
+    isTaskCompleted: boolean; // 是否為任務完成
     vectorSource: vectorObj[]; // vector search result
     rdbSource: rdbObj[]; // rdb search result
     finalReply: string;

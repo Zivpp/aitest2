@@ -26,5 +26,7 @@ export function createHisUserQAPayload(data: IHisUserQAInsert): IHisUserQAInsert
         is_emergency: data.is_emergency ?? 0,
         is_valid: data.is_valid ?? 0,
         isNeedHumanAgent: data.isNeedHumanAgent ?? 0,
+        is_related: data.is_related ?? 0,
+        is_task_completed: data.is_task_completed ?? 0,
     };
 }
