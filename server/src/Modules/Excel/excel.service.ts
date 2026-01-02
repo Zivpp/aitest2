@@ -15,7 +15,6 @@ export class ExcelService {
 
     async searchRDBRatio(keywords: string[], ratioThreshold: number) {
         try {
-            console.log('keywords >>>', keywords)
             // 1) 轉成 Postgres ARRAY 格式
             const pgKeywords = `{${keywords.map(k => `"${k}"`).join(",")}}`;
 
@@ -42,7 +41,8 @@ export class ExcelService {
               (match_count::float / total_count) AS match_ratio
             FROM faq_match
             WHERE (match_count::float / total_count) >= :ratio
-            ORDER BY match_ratio DESC;
+            ORDER BY match_ratio DESC
+            LIMIT 5;
             `;
 
             const result = await sequelize.query(sql, {

@@ -81,11 +81,11 @@ export class RequestLoggerMiddleware implements NestMiddleware {
 
       this.fillELKLog(req, res, elkLogObj, ms, s);
 
-      console.info('[Request]')
-      console.info(elkLogObj?.request);
-      console.info('[Response]')
-      console.info(elkLogObj?.response);
-      logService.logToELK(elkLogObj);
+      // console.info('[Request]')
+      // console.info(elkLogObj?.request);
+      // console.info('[Response]')
+      // console.info(elkLogObj?.response);
+      // logService.logToELK(elkLogObj);
     });
   }
 

@@ -1,16 +1,50 @@
 // line.service.ts
 import { Injectable } from '@nestjs/common';
-import axios from 'axios';
 import { ApiService } from 'src/Infrastructure/Api/api.service';
+import { IMultifunctionalQAObj } from './line.interface';
+import { GoogleGenerativeAIService } from '../GoogleGenerativeAI/google.generative.ai.service';
+import { MilvusService } from '../Milvus/milvus.service';
+import { ExcelService } from '../Excel/excel.service';
 
 @Injectable()
 export class LineService {
     constructor(
         private readonly apiService: ApiService,
+        private readonly googleGenerativeAI: GoogleGenerativeAIService,
+        private readonly milvusService: MilvusService,
+        private readonly excelService: ExcelService,
     ) { }
 
     private readonly LINE_API = 'https://api.line.me/v2/bot/message/reply';
     private readonly TOKEN = "YzslmbUYbTt8nvhIuCI0zxq+j+kxxcoH4p9wki1yOtlfw6sXC0JJbuOqs/iPBd2wQmRE/6PpyQ3PZUuFxUkd9uJeEHdsTD7N7rvNirQjJmHD4ZUVZiLFU3YaQUGYJgrFppgwY9LF4FCnDMWHfE3koAdB04t89/1O/w1cDnyilFU=";
+
+
+    async faqProcess(mfQAObj: IMultifunctionalQAObj) {
+        // 補足語句, 抓出關鍵字
+        const inferredRes = await this.googleGenerativeAI.getUserTextInferred(mfQAObj?.originalQuestion);
+        mfQAObj!.inferredQuestion = inferredRes?.inferred_question;
+        mfQAObj!.keywords = inferredRes?.keywords;
+        console.log(`[${mfQAObj.sessionId}][${mfQAObj?.userInfo?.displayName}] inferred question : ${inferredRes?.inferred_question}`);
+        console.log(`[${mfQAObj.sessionId}][${mfQAObj?.userInfo?.displayName}] keywords : ${inferredRes?.keywords}`);
+        // step 2. Vector search, get top 3
+        const resultVectorTop3Objs = await this.milvusService.searchVectorsTop3(mfQAObj?.inferredQuestion, 'db_20251201', ['p1'])
+        console.log(`[${mfQAObj.sessionId}][${mfQAObj?.userInfo?.displayName}] Vector search result : ${resultVectorTop3Objs
+            .map((item) => `[id=${item.id}, score=${item.score.toFixed(4)}]`)
+            .join(' ')}`);
+        // step 3. RDB search with keywords, get top 3
+        const resultRDBTop3Objs = await this.excelService.searchRDBRatio(mfQAObj?.keywords, 0.5)
+        console.log(`[${mfQAObj.sessionId}][${mfQAObj?.userInfo?.displayName}] RDB search result : ${resultRDBTop3Objs
+            .map((item) => `[id=${item.id}, score=${item.match_ratio.toFixed(4)}]`)
+            .join(' ')}`);
+        // step 4. 整合答案給 llm 推論
+        const answerResult = await this.googleGenerativeAI.IntegrationOfInferences(mfQAObj?.inferredQuestion, resultVectorTop3Objs, resultRDBTop3Objs)
+        console.log(`[${mfQAObj.sessionId}][${mfQAObj?.userInfo?.displayName}] Integration of inferences result : ${answerResult?.final_reply}`);
+
+        // step 5. 回覆使用者
+        mfQAObj!.finalReply = answerResult?.final_reply;
+
+        return;
+    }
 
     async handleMessage(text: string, ieatConetxt: string, displayName: string) {
         // // 🔹 這裡呼叫你自己的 LLM

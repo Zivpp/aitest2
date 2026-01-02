@@ -63,11 +63,6 @@ let RequestLoggerMiddleware = RequestLoggerMiddleware_1 = class RequestLoggerMid
             const s = ms / MS_TO_S;
             this.logger.log(`[${res.statusCode}] ${req.method} ${req.originalUrl} ${ms.toFixed(4)} ms (${s.toFixed(2)} s)`);
             this.fillELKLog(req, res, elkLogObj, ms, s);
-            console.info('[Request]');
-            console.info(elkLogObj?.request);
-            console.info('[Response]');
-            console.info(elkLogObj?.response);
-            logService.logToELK(elkLogObj);
         });
     }
     handleErrorLogging(error, req, res, elkLogObj) {

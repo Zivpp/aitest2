@@ -52,7 +52,7 @@ export declare const font_size: (worksheet: ExcelJS.Worksheet, column: string, s
     name: string;
 };
 export declare const alignment_horizontal: (worksheet: ExcelJS.Worksheet, column: string, position: ExcelJS.Alignment["horizontal"]) => {
-    horizontal: "fill" | "center" | "left" | "right" | "justify" | "centerContinuous" | "distributed";
+    horizontal: "fill" | "left" | "center" | "right" | "justify" | "centerContinuous" | "distributed";
     vertical: "middle";
 };
 export declare const numFmt: (worksheet: ExcelJS.Worksheet, column: string, type: string) => string;
